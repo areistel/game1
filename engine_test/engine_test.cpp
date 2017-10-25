@@ -20,7 +20,7 @@ public:
 		set_caption("Gosu Tutorial Game");
 	}
 	
-	double x_mouse;
+	double x_mouse;		//unnötig?
 	double y_mouse;
 	double x_moto;
 	double y;
