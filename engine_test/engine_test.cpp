@@ -20,6 +20,7 @@ public:
 		set_caption("Gosu Tutorial Game");
 	}
 	
+	double x_taste =320;
 	double x_mouse;		//unnötig?
 	double y_mouse;
 	double x_moto;
@@ -29,6 +30,14 @@ public:
 
 	void update() override {
 
+		if (input().down(Gosu::KB_LEFT) ==1)
+		{
+			x_taste = x_taste - 5;
+		}
+		if (input().down(Gosu::KB_RIGHT) == 1)
+		{
+			x_taste = x_taste +	5;
+		}
 		x_mouse = input().mouse_x();
 		y_mouse = input().mouse_y();
 
@@ -50,19 +59,21 @@ public:
 		}
 
 
-		if (x_mouse <= 625 && x_mouse >= 25)
+		if (x_taste <= 615 && x_taste >= 25)
 		{
-			x_moto = x_mouse;
+			x_moto = x_taste;
 		}
 		
-		if (x_mouse < 625 && x_mouse < 25)
+		if (x_taste < 615 && x_taste < 25)
 		{
 			x_moto = 25;
+			x_taste = 25;
 		}
 		
-		if (x_mouse > 625 && x_mouse > 25)
+		if (x_taste > 615 && x_taste > 25)
 		{
-			x_moto = 625;
+			x_moto = 615;
+			x_taste = 615;
 		}
 
 		bild.draw_rot(
