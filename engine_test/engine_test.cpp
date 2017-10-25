@@ -2,8 +2,8 @@
 //
 
 #include "stdafx.h"
-#include <Gosu/Gosu.hpp>
-#include <Gosu/Autolink.hpp>
+#include "Gosu/Gosu.hpp"
+#include "Gosu/Autolink.hpp"
 using namespace std;
 
 const int Window_size_x = 640;
@@ -50,19 +50,19 @@ public:
 		}
 
 
-		if (x_mouse <= 620 && x_mouse >= 20)
+		if (x_mouse <= 625 && x_mouse >= 25)
 		{
 			x_moto = x_mouse;
 		}
 		
-		if (x_mouse < 620 && x_mouse < 20)
+		if (x_mouse < 625 && x_mouse < 25)
 		{
-			x_moto = 20;
+			x_moto = 25;
 		}
 		
-		if (x_mouse > 620 && x_mouse > 20)
+		if (x_mouse > 625 && x_mouse > 25)
 		{
-			x_moto = 620;
+			x_moto = 625;
 		}
 
 		bild.draw_rot(
@@ -75,7 +75,7 @@ public:
 			
 		);
 		
-		
+		//das is n test
 
 		
 	}
