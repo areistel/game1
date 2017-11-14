@@ -4,4 +4,4 @@ This is our first C++ Project for the lecture in XXX at the Baden-Wuerttemberg C
 
 
 ## Story
-It is a hot motor bike game. You will drive a long way (no fake new, its a realy long way!!).
+It is a hot motor bike game. You will drive a long way (no fake news, its a realy long way!!).
