@@ -84,8 +84,8 @@ public:
 	Gosu::Image hintergrundbild;
 	GameWindow()
 		: Window(Window_size_x, Window_size_y)
-		, scrambler("scrambler_021-01.png")
-		, hintergrundbild("strasse.png")
+		, scrambler("media/bike.png")
+		, hintergrundbild("media/road.png")
 	{
 
 		set_caption("Nices Game");
