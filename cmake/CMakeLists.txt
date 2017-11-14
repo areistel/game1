@@ -85,7 +85,7 @@ add_executable(${PROJECT_NAME}
 
 
 get_filename_component(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR} PATH CACHE)
-set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PARENT_DIR})
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PARENT_DIR}/build)
 
 
 ################ Gosu ################
