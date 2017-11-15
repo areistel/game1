@@ -59,33 +59,75 @@ public:
 
 };
 
-//class Autos {				//autos auf 3 pos random generieren
-//	public:
-//
-//		rand_pos
-//
-//	random_val = rand() % 3 + 1;
-//
-//	switch (random_val)
-//	{
-//		1:	
-//
-//
-//	default:
-//		break;
-//	}
-//
-//};
+class Autos {				// Klasse für die Autos, mit Funktion für Setzen und Rückgabe der X und Y-Werte
+	
+	double x_Pos;
+	double y_Pos;
+
+	public:
+
+		double getX() {
+			return x_Pos;
+		}
+
+		double getY() {
+			return y_Pos;
+		}
+
+		void setX(double x) {
+			x_Pos = x;
+		}
+
+		void setY(double y) {
+			y_Pos = y;
+		}
+};
+
+vector<Autos> verkehr(vector<Autos> verkehr, int speed) {
+
+	Autos a;
+	if (verkehr.size() < 3) {
+
+		a.setX((Gosu::random(2.0,7.0)) * 100);			// Random Funktion nochmal überarbeiten Reistel!!! Passt noch nicht ganz
+		a.setY(Gosu::random(-400, 0.0));				// Hier dasselbe nochmal 
+		verkehr.push_back(a);
+	}	
+
+	for (int i = 0; i < verkehr.size(); i++)		// Autos nach unten bewegen
+	{
+		verkehr.at(i).setY((verkehr.at(i).getY() + speed));		
+	}
+
+	if (verkehr.front().getY() > Window_size_y) {	
+
+		for (int i = 0; i < verkehr.size() - 2; i++)
+		{
+			verkehr.at(i) = verkehr.at(i + 1);
+		}
+
+		verkehr.pop_back();
+		verkehr.pop_back();
+	}
+
+	
+
+	return verkehr;
+}
 
 class GameWindow : public Gosu::Window {
 public:
 	
-	Gosu::Image scrambler;
 
+	int speed = 5;
+
+	Gosu::Image scrambler;
+	Gosu::Image auto1;
 	Gosu::Image hintergrundbild;
+
 	GameWindow()
 		: Window(Window_size_x, Window_size_y)
 		, scrambler("scrambler_021-01.png")
+		, auto1("auto.png")
 		, hintergrundbild("strasse.png")
 	{
 
@@ -97,6 +139,7 @@ public:
 	
 	
 	Motorrad m1;	
+	vector<Autos> gegenverkehr;
 };
 
 
@@ -105,7 +148,6 @@ public:
 
 void GameWindow::update() {
 	
-
 	//if (time >= old_time +3)
 	//{
 		for (auto it = streifenliste.begin(); it != streifenliste.end(); it++) {
@@ -117,6 +159,7 @@ void GameWindow::update() {
 		//old_time = time;
 	//}
 
+		gegenverkehr = verkehr(gegenverkehr, speed);		// Vektor der die Autos speichert
 
 	int x_verschiebung = 60;
 
@@ -179,12 +222,19 @@ void GameWindow::draw() {
 
 	}
 
+	Autos a;
+	for (int i = 0; i < gegenverkehr.size(); i++)			// Zeichnen der Autos
+	{
+		a = gegenverkehr.at(i);
+		auto1.draw_rot(a.getX(), a.getY(), 1.0, 0.0, 0.5, 0.0, 1.0, 1.0);
+
+
+	}
+
 }
 
 
 int main() {
-
-
 
 GameWindow window;
 
@@ -205,7 +255,5 @@ s5.Streifen_ol_y = 1000;
 streifenliste.push_back(s5);
 
 window.show();
-
-
 
 }
