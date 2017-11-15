@@ -148,6 +148,7 @@ public:
 
 void GameWindow::update() {
 	
+
 	//if (time >= old_time +3)
 	//{
 		for (auto it = streifenliste.begin(); it != streifenliste.end(); it++) {
@@ -156,8 +157,7 @@ void GameWindow::update() {
 				it->Streifen_ol_y = -250;
 			}
 		}
-		//old_time = time;
-	//}
+		
 
 		gegenverkehr = verkehr(gegenverkehr, speed);		// Vektor der die Autos speichert
 
