@@ -88,7 +88,7 @@ public:
 		, hintergrundbild("media/road.png")
 	{
 
-		set_caption("Nices Game");
+		set_caption("Hot Engine");
 	}
 	
 	void update() override;
