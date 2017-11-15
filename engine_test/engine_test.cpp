@@ -106,16 +106,14 @@ public:
 void GameWindow::update() {
 	
 
-	//if (time >= old_time +3)
-	//{
+	
 		for (auto it = streifenliste.begin(); it != streifenliste.end(); it++) {
 			it->Streifen_ol_y = it->Streifen_ol_y + 5;
 			if (it->Streifen_ol_y > Window_size_y) {
 				it->Streifen_ol_y = -250;
 			}
 		}
-		//old_time = time;
-	//}
+		
 
 
 	int x_verschiebung = 60;
