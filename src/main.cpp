@@ -1,5 +1,3 @@
-// engine_test.cpp : Definiert den Einstiegspunkt für die Konsolenanwendung.
-//
 
 #include "Gosu/Gosu.hpp"
 #include "Gosu/AutoLink.hpp"
@@ -9,21 +7,20 @@ using namespace std;
 
 const int Window_size_x = 800;
 const int Window_size_y = 1000;
-double game_time;
-double old_time = game_time - 100;
 
-class Streifen;
 
-vector<Streifen> streifenliste;
-
+//#################### Streifen ####################
 class Streifen {
 public:
   double Streifen_ol_x = 390;
   double Streifen_ol_y = 20;			//muss verändert werden
+  
   double Streifen_or_x = 410;
   double Streifen_or_y = Streifen_ol_y;
+  
   double Streifen_ul_x = 390;
   double Streifen_ul_y = Streifen_ol_y + 300;
+  
   double Streifen_ur_x = 410;
   double Streifen_ur_y = Streifen_ol_y + 300;
 
@@ -41,12 +38,16 @@ public:
 			      Streifen_ul_x,  	//x4,
 			      Streifen_ol_y + 150,  	//y4,
 			      Gosu::Color::WHITE,  //c4,
-			      1  					//z,
+			      1  	       	//z,
 
 			      );
   }
 };
 
+
+
+
+//####################  Motorad  ####################
 
 class Motorrad  {
 
@@ -54,17 +55,21 @@ public:
   double x_taste = 500;
   double x_moto;
   double rot_moto = 0;
-	
 
 };
 
-class Autos {				// Klasse für die Autos, mit Funktion für Setzen und Rückgabe der X und Y-Werte
-	
+
+
+
+
+//#################### Autos ####################
+// Klasse für die Autos, mit Funktion für Setzen und Rückgabe der X und Y-Werte
+class Autos {				
+private:
   double x_Pos;
   double y_Pos;
 
 public:
-
   double getX() {
     return x_Pos;
   }
@@ -82,16 +87,25 @@ public:
   }
 };
 
+
+
+
+
+
 vector<Autos> verkehr(vector<Autos> verkehr, int speed) {
 
   Autos a;
   if (verkehr.size() < 3) {
 
-    a.setX((Gosu::random(2.0,7.0)) * 100);			// Random Funktion nochmal überarbeiten Reistel!!! Passt noch nicht ganz
-    a.setY(Gosu::random(-400, 0.0));				// Hier dasselbe nochmal 
+    // Random Funktion nochmal überarbeiten Reistel!!! Passt noch nicht ganz
+    a.setX((Gosu::random(2.0,7.0)) * 100);
+    // Hier dasselbe nochmal 
+    a.setY(Gosu::random(-400, 0.0));
+    
     verkehr.push_back(a);
   }	
 
+  
   for (int i = 0; i < verkehr.size(); i++)		// Autos nach unten bewegen
     {
       verkehr.at(i).setY((verkehr.at(i).getY() + speed));		
@@ -113,9 +127,14 @@ vector<Autos> verkehr(vector<Autos> verkehr, int speed) {
   return verkehr;
 }
 
+
+
+
+//#################### GameWindow ####################
+
 class GameWindow : public Gosu::Window {
-public:
-	
+private:
+  vector<Streifen> streifenliste;
 
   int speed = 5;
 
@@ -123,102 +142,156 @@ public:
   Gosu::Image auto1;
   Gosu::Image hintergrundbild;
 
-  GameWindow()
-    : Window(Window_size_x, Window_size_y)
-    , scrambler("media/bike.png")
-    , auto1("media/bike.png")
-    , hintergrundbild("media/roud.png")
-  {
+  Motorrad m1;	
+  vector<Autos> gegenverkehr;
 
-    set_caption("Nices Game");
-  }
+  
+public:
+  GameWindow();
 	
   void update() override;
   void draw() override;
 	
-	
-  Motorrad m1;	
-  vector<Autos> gegenverkehr;
 };
+
+
+GameWindow::GameWindow() : Window(Window_size_x, Window_size_y)
+	       , scrambler("media/bike.png")
+	       , auto1("media/auto.png")
+	       , hintergrundbild("media/strasse.png")
+  {
+    set_caption("Hot engine");
+
+
+    //create primitive Streifen
+    Streifen s1;
+    s1.Streifen_ol_y = 0;
+    streifenliste.push_back(s1);
+    Streifen s2;
+    s2.Streifen_ol_y = 250;
+    streifenliste.push_back(s2);
+    Streifen s3;
+    s3.Streifen_ol_y = 500;
+    streifenliste.push_back(s3);
+    Streifen s4;
+    s4.Streifen_ol_y = 750;
+    streifenliste.push_back(s4);
+    Streifen s5;
+    s5.Streifen_ol_y = 1000;
+    streifenliste.push_back(s5);
+  }
+
 
 
 
 
 
 void GameWindow::update() {
-	
 
-  //if (game_time >= old_time +3)
-  //{
+  //Streifen animation
   for (auto it = streifenliste.begin(); it != streifenliste.end(); it++) {
     it->Streifen_ol_y = it->Streifen_ol_y + 5;
     if (it->Streifen_ol_y > Window_size_y) {
       it->Streifen_ol_y = -250;
     }
   }
-		
 
+  
+		
+  //Auto animation
   gegenverkehr = verkehr(gegenverkehr, speed);		// Vektor der die Autos speichert
 
+
+
+
+
+  
+  
+  //Motorbike animation
   int x_verschiebung = 60;
 
 
-  if (m1.x_taste <= Window_size_x- x_verschiebung && m1.x_taste >= x_verschiebung)		//x_moto aktualisieren
+  //x_moto aktualisieren
+  if (m1.x_taste <= Window_size_x - x_verschiebung && m1.x_taste >= x_verschiebung)	
     {
       m1.x_moto = m1.x_taste;
     }
 
-  if (m1.x_taste < Window_size_x- x_verschiebung && m1.x_taste < x_verschiebung)		//linksseitige sperre
+  //linksseitige sperre
+  if (m1.x_taste < Window_size_x- x_verschiebung && m1.x_taste < x_verschiebung)	
     {
       m1.x_moto = x_verschiebung;
       m1.x_taste = x_verschiebung;
     }
 
-  if (m1.x_taste > Window_size_x- x_verschiebung && m1.x_taste > x_verschiebung)		//rechtsseitige sperre
+  //rechtsseitige sperre
+  if (m1.x_taste > Window_size_x- x_verschiebung && m1.x_taste > x_verschiebung)		
     {
       m1.x_moto = Window_size_x- x_verschiebung;
       m1.x_taste = Window_size_x- x_verschiebung;
     }
 
-  if (input().down(Gosu::KB_LEFT) == 1)			//input linke pfeiltaste
+
+  
+
+
+  //Tasten auswerten (control motorbike)
+  
+  //input linke pfeiltaste
+  if (input().down(Gosu::KB_LEFT) == 1)		
     {
       m1.x_taste = m1.x_taste - 7;
       m1.rot_moto = -5;
     }
-  if (input().down(Gosu::KB_LEFT) == 0 && input().down(Gosu::KB_RIGHT) == 0)			//zurücksetzen winkel
+  
+  //zurücksetzen winkel
+  if (input().down(Gosu::KB_LEFT) == 0 && input().down(Gosu::KB_RIGHT) == 0)			
     {
       m1.rot_moto = 0;
     }
-  if (input().down(Gosu::KB_RIGHT) == 1)			//input rechte pfeiltaste
+  
+  //input rechte pfeiltaste
+  if (input().down(Gosu::KB_RIGHT) == 1)		
     {
       m1.x_taste = m1.x_taste + 7;
       m1.rot_moto = 5;
     }
 
-  game_time += update_interval();
 }
+
+
+
+
 
 void GameWindow::draw() {
 
+  //bild erstellen mit entsprechenden koordinaten
 
-  scrambler.draw_rot(									//bild erstellen mit entsprechenden koordinaten
+  //Motorad z = 2; scale = 0.2
+  scrambler.draw_rot(	
 		     m1.x_moto, Window_size_y-100,
 		     2,
 		     m1.rot_moto,
 		     0.5,
 		     0.5,
-		     0.2, 0.2);
+		     0.2, 0.2
+			);
 
+  //strasse z = 0; scale = 1
   hintergrundbild.draw(
 		       0, 0
-		       , 0, 1, 1
+		       , 0,
+		       1, 1
 		       );
 
+  //draw streifen
   for (auto it = streifenliste.begin(); it != streifenliste.end(); it++) {
     it->draw();
-
   }
 
+
+
+  //draw Autos
   Autos a;
   for (int i = 0; i < gegenverkehr.size(); i++)			// Zeichnen der Autos
     {
@@ -231,26 +304,15 @@ void GameWindow::draw() {
 }
 
 
+
+
+//#################### main ####################
+
 int main() {
 
   GameWindow window;
-
-  Streifen s1;
-  s1.Streifen_ol_y = 0;
-  streifenliste.push_back(s1);
-  Streifen s2;
-  s2.Streifen_ol_y = 250;
-  streifenliste.push_back(s2);
-  Streifen s3;
-  s3.Streifen_ol_y = 500;
-  streifenliste.push_back(s3);
-  Streifen s4;
-  s4.Streifen_ol_y = 750;
-  streifenliste.push_back(s4);
-  Streifen s5;
-  s5.Streifen_ol_y = 1000;
-  streifenliste.push_back(s5);
-
   window.show();
+
+  return 0;
 
 }
