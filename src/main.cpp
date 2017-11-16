@@ -112,6 +112,7 @@ private:
   Gosu::Image auto1;
   Gosu::Image hintergrundbild;
 
+  Gosu::Font font;
   
   Motorrad m1;
   vector<Streifen> streifenliste;
@@ -119,6 +120,8 @@ private:
 
   
   int speed;
+
+  bool running;
   
 public:
   GameWindow();
@@ -133,14 +136,15 @@ public:
 
 
 GameWindow::GameWindow() : Window(Window_size_x, Window_size_y)
-	       , scrambler("media/bike.png")
-	       , auto1("media/auto.png")
-	       , hintergrundbild("media/strasse.png")
+			 , scrambler("media/bike.png")
+			 , auto1("media/auto.png")
+			 , hintergrundbild("media/strasse.png")
+			 , font(20)
   {
     set_caption("Hot engine");
 
     speed = 5;
-    
+    running = true;
 
     //create primitive Streifen
     Streifen s1;
@@ -195,7 +199,12 @@ bool GameWindow::overlaps(double x, double y, double w, double h, int b_x, int b
 
 
 void GameWindow::update() {
-
+  if(!running)
+    {
+      //Game over
+      return;
+    }
+  
   //Streifen animation
   for (auto it = streifenliste.begin(); it != streifenliste.end(); it++) {
     it->Streifen_ol_y = it->Streifen_ol_y + 5;
@@ -260,6 +269,19 @@ void GameWindow::update() {
       m1.rot_moto = 5;
     }
 
+
+
+
+  //check collision with motorbike:
+  for(std::vector<Autos*>::iterator au = gegenverkehr.begin(); au != gegenverkehr.end(); ++au) {
+    if(overlaps( m1.x_moto, Window_size_y - 100, scrambler.width() * 0.2 - 60, scrambler.height() * 0.2, (*au)->getX(), (*au)->getY(), auto1.width() - 20, auto1.height()))
+      {
+	running = false;
+	break;
+      }
+  }
+
+  
 }
 
 
@@ -270,19 +292,20 @@ void GameWindow::update() {
 void GameWindow::updateVerkehr() {
 
   //there should be 3 cars on the screen ... 
-  if (gegenverkehr.size() < 4) {
+  if (gegenverkehr.size() < 3) {
     Autos *a;
 
     bool block = true;
       
-    double rand_x = std::rand() % Window_size_x;
-    double rand_y = -(std::rand() % 1000);
+    double rand_x = 0;
+    double rand_y = 0;
 
+    //dont overlap cars
     while(block){
       block = false;
 
       rand_x = std::rand() % Window_size_x;
-      rand_y = -(std::rand() % 1000);
+      rand_y = -(std::rand() % 3000);
 
     
       for(std::vector<Autos*>::iterator au = gegenverkehr.begin(); au != gegenverkehr.end(); ++au) {
