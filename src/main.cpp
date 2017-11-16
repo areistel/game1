@@ -126,6 +126,8 @@ public:
   void update() override;
   void draw() override;
   void updateVerkehr();
+
+  bool overlaps(double x, double y, double w, double h, int b_x, int b_y, int b_w, int b_h);
 	
 };
 
@@ -160,6 +162,35 @@ GameWindow::GameWindow() : Window(Window_size_x, Window_size_y)
 
 
 
+
+bool GameWindow::overlaps(double x, double y, double w, double h, int b_x, int b_y, int b_w, int b_h)
+{
+  int b_l = b_x - (b_w / 2.0);
+  int b_r = b_x + (b_w / 2.0);
+  int b_t = b_y + (b_h / 2.0);
+  int b_b = b_y - (b_h / 2.0);
+  
+  
+  int l = x - (w / 2.0);
+  int r = x + (w / 2.0);
+  int t = y + (h / 2.0);
+  int b = y - (h / 2.0);
+
+
+  
+  
+  if(r > b_l && b < b_t && r <= b_r && b >= b_b)
+    return true;
+  if(l < b_r && b < b_t && l >= b_l && b >= b_b)
+    return true;
+  if(r > b_l && t > b_b && r < b_r && t <= b_t)
+    return true;
+  if(l < b_r && t > b_b && l >= b_l && t <= b_t)
+    return true;
+
+  return false;
+  
+}
 
 
 
@@ -239,15 +270,34 @@ void GameWindow::update() {
 void GameWindow::updateVerkehr() {
 
   //there should be 3 cars on the screen ... 
-  if (gegenverkehr.size() < 3) {
+  if (gegenverkehr.size() < 4) {
     Autos *a;
-    
+
+    bool block = true;
+      
     double rand_x = std::rand() % Window_size_x;
     double rand_y = -(std::rand() % 1000);
-  
+
+    while(block){
+      block = false;
+
+      rand_x = std::rand() % Window_size_x;
+      rand_y = -(std::rand() % 1000);
+
+    
+      for(std::vector<Autos*>::iterator au = gegenverkehr.begin(); au != gegenverkehr.end(); ++au) {
+	if(overlaps(rand_x, rand_y,  auto1.width(), auto1.height(), (*au)->getX(), (*au)->getY(), auto1.width(), auto1.height()))
+	  {
+	    block = true;
+	    break;
+	  }
+      }
+	
+    }
+
     a = new Autos(rand_x, rand_y); 
-    
-    
+
+      
     gegenverkehr.push_back(a);
   }	
 
