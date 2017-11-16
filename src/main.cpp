@@ -171,25 +171,25 @@ bool GameWindow::overlaps(double x, double y, double w, double h, int b_x, int b
 {
   int b_l = b_x - (b_w / 2.0);
   int b_r = b_x + (b_w / 2.0);
-  int b_t = b_y + (b_h / 2.0);
-  int b_b = b_y - (b_h / 2.0);
+  int b_t = b_y - (b_h / 2.0);
+  int b_b = b_y + (b_h / 2.0);
   
   
   int l = x - (w / 2.0);
   int r = x + (w / 2.0);
-  int t = y + (h / 2.0);
-  int b = y - (h / 2.0);
+  int t = y - (h / 2.0);
+  int b = y + (h / 2.0);
 
 
   
   
-  if(r > b_l && b < b_t && r <= b_r && b >= b_b)
+  if(r > b_l && b > b_t && r <= b_r && b <= b_b)
     return true;
-  if(l < b_r && b < b_t && l >= b_l && b >= b_b)
+  if(l < b_r && b > b_t && l >= b_l && b <= b_b)
     return true;
-  if(r > b_l && t > b_b && r < b_r && t <= b_t)
+  if(r > b_l && t < b_b && r < b_r && t >= b_t)
     return true;
-  if(l < b_r && t > b_b && l >= b_l && t <= b_t)
+  if(l < b_r && t < b_b && l >= b_l && t >= b_t)
     return true;
 
   return false;
@@ -274,7 +274,7 @@ void GameWindow::update() {
 
   //check collision with motorbike:
   for(std::vector<Autos*>::iterator au = gegenverkehr.begin(); au != gegenverkehr.end(); ++au) {
-    if(overlaps( m1.x_moto, Window_size_y - 100, scrambler.width() * 0.2 - 60, scrambler.height() * 0.2, (*au)->getX(), (*au)->getY(), auto1.width() - 20, auto1.height()))
+    if(overlaps( m1.x_moto, Window_size_y - 100, scrambler.width() * 0.2 - 60, scrambler.height() * 0.2- 30, (*au)->getX(), (*au)->getY(), auto1.width() - 30, auto1.height()))
       {
 	running = false;
 	break;
@@ -291,7 +291,7 @@ void GameWindow::update() {
 void GameWindow::updateVerkehr() {
 
   //there should be 3 cars on the screen ... 
-  if (gegenverkehr.size() < 3) {
+  if (gegenverkehr.size() < 5) {
     Autos *a;
 
     bool block = true;
@@ -308,7 +308,7 @@ void GameWindow::updateVerkehr() {
 
     
       for(std::vector<Autos*>::iterator au = gegenverkehr.begin(); au != gegenverkehr.end(); ++au) {
-	if(overlaps(rand_x, rand_y,  auto1.width(), auto1.height(), (*au)->getX(), (*au)->getY(), auto1.width(), auto1.height()))
+	if(overlaps(rand_x, rand_y,  auto1.width() - 10, auto1.height(), (*au)->getX(), (*au)->getY(), auto1.width() - 10, auto1.height()))
 	  {
 	    block = true;
 	    break;
