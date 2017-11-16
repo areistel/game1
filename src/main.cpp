@@ -3,6 +3,8 @@
 #include "Gosu/AutoLink.hpp"
 #include <iostream>
 #include <vector>
+#include <ctime>
+
 using namespace std;
 
 const int Window_size_x = 800;
@@ -70,6 +72,8 @@ private:
   double y_Pos;
 
 public:
+  Autos(double x, double y);
+  
   double getX() {
     return x_Pos;
   }
@@ -88,44 +92,12 @@ public:
 };
 
 
-
-
-
-
-vector<Autos> verkehr(vector<Autos> verkehr, int speed) {
-
-  Autos a;
-  if (verkehr.size() < 3) {
-
-    // Random Funktion nochmal überarbeiten Reistel!!! Passt noch nicht ganz
-    a.setX((Gosu::random(2.0,7.0)) * 100);
-    // Hier dasselbe nochmal 
-    a.setY(Gosu::random(-400, 0.0));
-    
-    verkehr.push_back(a);
-  }	
-
+Autos::Autos(double x, double y): x_Pos(x), y_Pos(y)
+{
   
-  for (int i = 0; i < verkehr.size(); i++)		// Autos nach unten bewegen
-    {
-      verkehr.at(i).setY((verkehr.at(i).getY() + speed));		
-    }
-
-  if (verkehr.front().getY() > Window_size_y) {	
-
-    for (int i = 0; i < verkehr.size() - 2; i++)
-      {
-	verkehr.at(i) = verkehr.at(i + 1);
-      }
-
-    verkehr.pop_back();
-    verkehr.pop_back();
-  }
-
-	
-
-  return verkehr;
 }
+
+
 
 
 
@@ -134,23 +106,26 @@ vector<Autos> verkehr(vector<Autos> verkehr, int speed) {
 
 class GameWindow : public Gosu::Window {
 private:
-  vector<Streifen> streifenliste;
 
-  int speed = 5;
 
   Gosu::Image scrambler;
   Gosu::Image auto1;
   Gosu::Image hintergrundbild;
 
-  Motorrad m1;	
-  vector<Autos> gegenverkehr;
+  
+  Motorrad m1;
+  vector<Streifen> streifenliste;
+  vector<Autos*> gegenverkehr;
 
+  
+  int speed;
   
 public:
   GameWindow();
 	
   void update() override;
   void draw() override;
+  void updateVerkehr();
 	
 };
 
@@ -162,6 +137,8 @@ GameWindow::GameWindow() : Window(Window_size_x, Window_size_y)
   {
     set_caption("Hot engine");
 
+    speed = 5;
+    
 
     //create primitive Streifen
     Streifen s1;
@@ -196,14 +173,9 @@ void GameWindow::update() {
     }
   }
 
-  
 		
   //Auto animation
-  gegenverkehr = verkehr(gegenverkehr, speed);		// Vektor der die Autos speichert
-
-
-
-
+  updateVerkehr();
 
   
   
@@ -263,6 +235,45 @@ void GameWindow::update() {
 
 
 
+
+void GameWindow::updateVerkehr() {
+
+  //there should be 3 cars on the screen ... 
+  if (gegenverkehr.size() < 3) {
+    Autos *a;
+    
+    double rand_x = std::rand() % Window_size_x;
+    double rand_y = -(std::rand() % 1000);
+  
+    a = new Autos(rand_x, rand_y); 
+    
+    
+    gegenverkehr.push_back(a);
+  }	
+
+  // Autos nach unten bewegen
+  for (int i = 0; i < gegenverkehr.size(); i++)	
+    {
+      gegenverkehr.at(i)->setY((gegenverkehr.at(i)->getY() + speed));		
+    }
+
+
+  //Autos entfernen die nicht zu sehen sind
+  for (auto it = gegenverkehr.begin(); it != gegenverkehr.end(); it++) {
+    if((*it)->getY() - (auto1.height() / 2.0) > Window_size_y)
+      {
+	delete (*it);
+	gegenverkehr.erase(it);
+	it--;
+      }
+  }
+  
+    
+}
+
+
+
+
 void GameWindow::draw() {
 
   //bild erstellen mit entsprechenden koordinaten
@@ -292,14 +303,15 @@ void GameWindow::draw() {
 
 
   //draw Autos
-  Autos a;
-  for (int i = 0; i < gegenverkehr.size(); i++)			// Zeichnen der Autos
-    {
-      a = gegenverkehr.at(i);
-      auto1.draw_rot(a.getX(), a.getY(), 1.0, 0.0, 0.5, 0.0, 1.0, 1.0);
+  for (auto it = gegenverkehr.begin(); it != gegenverkehr.end(); it++) {
 
-
-    }
+    //draw auto z = 3; scale = 1
+    auto1.draw_rot((*it)->getX(), (*it)->getY(),
+		   3,
+		   0.0,
+		   0.5, 0.5,
+		   1.0, 1.0);
+  }
 
 }
 
@@ -310,6 +322,9 @@ void GameWindow::draw() {
 
 int main() {
 
+  //randomize the random function
+  std::srand(std::time(0));
+  
   GameWindow window;
   window.show();
 

@@ -1,6 +1,11 @@
+
 #!/bin/bash
 
 cd ./cmake/
 make
-cd ..
-./hot_engine
+if [ $? -eq 0 ]; then
+    cd ..
+    ./hot_engine
+else
+    echo FAIL
+fi
