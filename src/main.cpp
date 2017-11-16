@@ -139,7 +139,7 @@ GameWindow::GameWindow() : Window(Window_size_x, Window_size_y)
 			 , scrambler("media/bike.png")
 			 , auto1("media/auto.png")
 			 , hintergrundbild("media/strasse.png")
-			 , font(20)
+			 , font(70)
   {
     set_caption("Hot engine");
 
@@ -280,7 +280,6 @@ void GameWindow::update() {
 	break;
       }
   }
-
   
 }
 
@@ -305,7 +304,7 @@ void GameWindow::updateVerkehr() {
       block = false;
 
       rand_x = std::rand() % Window_size_x;
-      rand_y = -(std::rand() % 3000);
+      rand_y = -(std::rand() % 1000);
 
     
       for(std::vector<Autos*>::iterator au = gegenverkehr.begin(); au != gegenverkehr.end(); ++au) {
@@ -349,6 +348,13 @@ void GameWindow::updateVerkehr() {
 
 void GameWindow::draw() {
 
+  
+  if(!running)
+    {
+      font.draw("Game Over", (Window_size_x/2.0) - 160, Window_size_y / 2.0, 10);
+    }
+
+  
   //bild erstellen mit entsprechenden koordinaten
 
   //Motorad z = 2; scale = 0.2
