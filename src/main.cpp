@@ -143,7 +143,7 @@ GameWindow::GameWindow() : Window(Window_size_x, Window_size_y)
   {
     set_caption("Hot engine");
 
-    speed = 5;
+    speed = 10;
     running = true;
 
     //create primitive Streifen
@@ -291,7 +291,7 @@ void GameWindow::update() {
 void GameWindow::updateVerkehr() {
 
   //there should be 3 cars on the screen ... 
-  if (gegenverkehr.size() < 5) {
+  if (gegenverkehr.size() < 3) {
     Autos *a;
 
     bool block = true;
