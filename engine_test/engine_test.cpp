@@ -171,7 +171,7 @@ GameWindow::GameWindow() : Window(Window_size_x, Window_size_y)
 
 
 
-bool GameWindow::overlaps(double x, double y, double w, double h, int b_x, int b_y, int b_w, int b_h)
+bool GameWindow::overlaps(double x, double y, double w, double h, int b_x, int b_y, int b_w, int b_h)	//überprüft ob sich ecken überlappen
 {
 	int b_l = b_x - (b_w / 2.0);
 	int b_r = b_x + (b_w / 2.0);
@@ -187,13 +187,13 @@ bool GameWindow::overlaps(double x, double y, double w, double h, int b_x, int b
 
 
 
-	if (r > b_l && b > b_t && r <= b_r && b <= b_b)
+	if (r > b_l && b > b_t && r <= b_r && b <= b_b)		//links oben
 		return true;
-	if (l < b_r && b > b_t && l >= b_l && b <= b_b)
+	if (l < b_r && b > b_t && l >= b_l && b <= b_b)		//rechts oben
 		return true;
-	if (r > b_l && t < b_b && r < b_r && t >= b_t)
+	if (r > b_l && t < b_b && r < b_r && t >= b_t)		//links unten
 		return true;
-	if (l < b_r && t < b_b && l >= b_l && t >= b_t)
+	if (l < b_r && t < b_b && l >= b_l && t >= b_t)		//rechts unten
 		return true;
 
 	return false;
@@ -206,8 +206,15 @@ void GameWindow::update() {
 	if (!running)
 	{
 		//Game over
+		if (input().down(Gosu::KB_ESCAPE) == 1)
+		{
+			this->close();
+		}
+		
 		return;
 	}
+
+	
 
 	//Streifen animation
 	for (auto it = streifenliste.begin(); it != streifenliste.end(); it++) {
@@ -340,7 +347,8 @@ void GameWindow::updateVerkehr() {
 		{
 			delete (*it);
 			gegenverkehr.erase(it);
-			it--;
+			//it--;
+			it = gegenverkehr.begin();
 		}
 	}
 
@@ -356,6 +364,8 @@ void GameWindow::draw() {
 	if (!running)
 	{
 		font.draw("Game Over", (Window_size_x / 2.0) - 160, Window_size_y / 2.0, 10);
+
+
 	}
 
 
